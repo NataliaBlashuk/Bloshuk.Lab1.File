@@ -198,6 +198,7 @@ int ContentsFile(char* fileName)
 	streamIn.close();
 	return count;
 }
+
 void CreateFile(char* fileName, int n, int* a)
 {
 	ofstream streamOut(fileName);
@@ -281,7 +282,6 @@ void WithFile(int* a, char* fileName)
 		}
 	}
 }
-
 
 void WithoutFile(int* a, int n)
 {
