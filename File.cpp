@@ -1,21 +1,22 @@
 #include <iostream>
 #include <fstream>
 
-int* EnterArray(int*, int);
+int* EnterArray(int);
 void DisplayArray(int*, int);
 int FindMaxNeg(int*, int);
 int FindMinPos(int*, int);
 int EvenCount(int);
 int* RandArray(int);
-int WorkProcessWithArray(int*, int);
+void WorkProcessWithArray(int*, int);
 int ContentsFile(char*);
-int* InitArray(char*, int);
+void CreateFile(char*, int, int*);
 void AddFile(char*, int*, int, char*);
 bool Continue(char);
 void WithFile(int*, char*);
 void WithoutFile(int*, int);
 
-const int N = 21;
+const int N = 210;
+const int M = 18;
 
 using namespace std;
 
@@ -24,30 +25,32 @@ int main()
 	while (true)
 	{
 		char fileName[N] = "";
-		int n;
-		while (true)
-		{
-			cout << "Enter the number of elements in the array" << endl;
-			cin >> n;
-			if (n > 0) break;
-			cout << "Error! Please, enter the other value" << endl;
-
-		}
-		//int* a = RandArray(n);
-		int* a = EnterArray(a, n);
+		int* a = RandArray(M);
+		//int* b = EnterArray(n);
 
 		char file;
-		cout << "If you would like to work with file, please, press f or F\n If you don`t like to use file, press the other key";
+		cout << "If you would like to work with file, please, press f or F\n If you don`t like to use file, press the other key ";
 		cin >> file;
 		if (file == 'f' || file == 'F')
 			WithFile(a, fileName);
 		else
+		{
+			int n;
+			while (true)
+			{
+				cout << "Enter the number of elements in the array" << endl;
+				cin >> n;
+				if (n > 0) break;
+				cout << "Error! Please, enter the other value" << endl;
+			}
 			WithoutFile(a, n);
+		}
+		break;
 	}
 	return 0;
 }
 
-int* EnterArray(int* a, int n)
+int* EnterArray(int n)
 {
 	int* a = new int[n];
 	cout << "Enter elements of array" << endl;
@@ -130,7 +133,8 @@ int FindMinPos(int* a, int n)
 		}
 	}
 }
-int WorkProcessWithArray(int* a, int n)
+
+void WorkProcessWithArray(int* a, int n)
 {
 	int maxNegIndex = FindMaxNeg(a, n), minPosIndex = FindMinPos(a, n);
 	int startIndex, endIndex;
@@ -171,7 +175,9 @@ int WorkProcessWithArray(int* a, int n)
 		*(a + i) = *(a + (i + startIndex + 1));
 
 	int m = endIndex - startIndex - 1;
-	return m;
+	cout << "Array after sort" << endl;
+	DisplayArray(a, m);
+	//return m;
 }
 
 int ContentsFile(char* fileName)
@@ -192,21 +198,25 @@ int ContentsFile(char* fileName)
 	streamIn.close();
 	return count;
 }
-
-int* InitArray(char* fileName, int n)
+void CreateFile(char* fileName, int n, int* a)
 {
-	ifstream streamIn(fileName);
-	if (!streamIn.is_open())
+	ofstream streamOut(fileName);
+	if (!streamOut.is_open())
 	{
-		cout << "Cannot open file to read!" << endl;
+		cout << "Cannot open file to write!" << endl;
 		system("pause");
 		exit(1);
 	}
-	int* arr = new int[n];
+	cout << "Enter the elements of array" << endl;
+	system("cls");
+	int temp;
 	for (int i = 0; i < n; i++)
-		streamIn >> arr[i];
-	streamIn.close();
-	return arr;
+	{
+		temp = a[i];
+		cin >> temp;
+		streamOut.width(5);
+		streamOut << temp;
+	}
 }
 
 void AddFile(char* fileName, int* arr, int n, char*)
@@ -254,13 +264,13 @@ void WithFile(int* a, char* fileName)
 				cin >> n;
 				if (n > 0) break;
 				cout << "Error! Please, enter the other value" << endl;
-
 			}
-			int* a = InitArray(fileName, n);
-			char* string = "Source array ";
+			int* a = RandArray(n);
+			CreateFile(fileName, n, a);
+			char* string = "Source array: ";
 			AddFile(fileName, a, n, string);
 			WorkProcessWithArray(a, n);
-			string = "Array after sort";
+			string = "Array after sort: ";
 			AddFile(fileName, a, n, string);
 			cout << "Array was saved at file " << fileName << endl;
 
@@ -277,28 +287,18 @@ void WithoutFile(int* a, int n)
 {
 	while (true)
 	{
-		int n;
-		while (true)
-		{
-			cout << "Enter the number of elements in the array" << endl;
-			cin >> n;
-			if (n > 0) break;
-			cout << "Error! Please, enter the other value" << endl;
-
-		}
-		//int* a = RandArray(n);
-		int* a = EnterArray(a, n);
+		char yes = 'k';
+		int* a = RandArray(n);
+		//int* a = EnterArray(n);
 		system("cls");
 		cout << "Source array " << endl;
 		DisplayArray(a, n);
 		cout << endl;
-		int m = WorkProcessWithArray(a, n);
-		cout << endl << "Array after sort " << endl;
-		DisplayArray(a, m);
+		WorkProcessWithArray(a, n);
 		system("pause");
 		system("cls");
 
-		if (Continue)
+		if (Continue(yes))
 			continue;
 		break;
 	}
